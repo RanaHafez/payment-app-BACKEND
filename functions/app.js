@@ -2,15 +2,15 @@
 
 const express = require("express");
 const serverless = require("serverless-http");
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const app = express();
 const router = express.Router();
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
 
 router.get("/", (req, res) => {
     res.send("App is running..");
 });
 
-app.use("/.netlify/functions/app", router);
 
 
 const cors = require('cors');
@@ -19,7 +19,7 @@ app.use(cors());
 app.use(express.json());
 
 
-app.post('/create-payment-intent', async (req, res) => {
+router.post('/create-payment-intent', async (req, res) => {
     console.log("here in the post ");
   try {
     const paymentIntent = await stripe.paymentIntents.create({
@@ -35,5 +35,5 @@ app.post('/create-payment-intent', async (req, res) => {
   }
 });
 
-
+app.use("/.netlify/functions/app", router);
 module.exports.handler = serverless(app);
