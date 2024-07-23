@@ -1,7 +1,18 @@
-const express = require('express');
+//app.js
 
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const express = require("express");
+const serverless = require("serverless-http");
 const app = express();
+const router = express.Router();
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
+router.get("/", (req, res) => {
+    res.send("App is running..");
+});
+
+app.use("/.netlify/functions/app", router);
+
+
 const cors = require('cors');
 
 app.use(cors());
@@ -25,5 +36,4 @@ app.post('/create-payment-intent', async (req, res) => {
 });
 
 
-const port = process.env.PORT || 3001;
-app.listen(port, () => console.log(`Server running on port 3000`));
+module.exports.handler = serverless(app);
