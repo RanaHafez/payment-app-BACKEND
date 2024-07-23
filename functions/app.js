@@ -3,20 +3,17 @@
 const express = require("express");
 const serverless = require("serverless-http");
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const cors = require('cors');
+
 const app = express();
 const router = express.Router();
+app.use(cors());
+app.use(express.json());
 
 
 router.get("/", (req, res) => {
     res.send("App is running..");
 });
-
-
-
-const cors = require('cors');
-
-app.use(cors());
-app.use(express.json());
 
 
 router.post('/create-payment-intent', async (req, res) => {
